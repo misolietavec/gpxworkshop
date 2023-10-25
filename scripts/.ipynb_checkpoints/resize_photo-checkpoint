@@ -1,0 +1,25 @@
+#! /usr/bin/env python3
+
+from PIL import Image, ImageOps
+import os
+
+def reduce_photos(width=300):
+    if not os.path.isdir('resized'):
+        os.mkdir("resized")
+    images = [f for f in os.listdir() if f.endswith(('JPG', 'jpg'))]
+    for image in images:
+        img = Image.open(image)
+        img_new = ImageOps.exif_transpose(img)
+        w, h = img_new.size
+        if w > h:
+            wred = width
+            hred = int(h * (wred / w))
+        else:
+            wred = int(w * (hred / w))
+            hred = width
+        img_new.thumbnail((wred, hred))
+        img_new.save(f"resized/{image}", optimize=True, quality=85)
+        print(w, h, wred, hred)
+
+reduce_photos()
+    
